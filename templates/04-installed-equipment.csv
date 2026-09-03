@@ -1,0 +1,2 @@
+BlockCode,ParentAssetCode,AssetType,AssetCode,Manufacturer,Model,SerialNumber,InstallationDate,DrawingCode,DrawingRevision,Installer,Status
+BLK-A,STR-A-001,PV_MODULE,MOD-A-0001,VendorY,MOD-640W,MOD-A-SN0001,2026-08-10,SLD-A,01,EPC Team,INSTALLED

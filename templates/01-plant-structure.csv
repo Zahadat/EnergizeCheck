@@ -1,0 +1,3 @@
+BlockCode,BlockName,AssetType,AssetCode,ParentAssetCode,Manufacturer,Model,SerialNumber,Status
+BLK-A,Inverter Block A,INVERTER,INV-A-01,,VendorX,INV-350K,INV-A-SN01,PLANNED
+BLK-A,Inverter Block A,MPPT,INV-A-01-MPPT-01,INV-A-01,,,,PLANNED

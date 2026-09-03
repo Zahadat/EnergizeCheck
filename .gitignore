@@ -1,0 +1,54 @@
+# EnergizeCheck - public repository exclusions
+
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+data/
+**/data/
+
+# Backups / archives
+_backup*/
+backup*/
+archive/
+**/archive/
+*.bak
+
+# Generated reports and dossiers
+reports/
+**/reports/
+dossier-*/
+**/dossier-*/
+
+# Evidence / customer files
+evidence/
+documents/
+customer-data/
+real-project-data/
+
+# Temporary imports
+test-imports/
+imports/private/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python helper caches
+__pycache__/
+*.pyc
+
+# PowerShell history / local secrets
+*.clixml
+.env
+.env.*
+secrets.*
+credentials.*
+
+# Logs
+*.log
+logs/

@@ -1,0 +1,2 @@
+BlockCode,MaterialCode,Description,OpeningQty,DeliveredQty,IssuedQty,ReturnedQty,InstalledQty,DamagedQty,PhysicalRemaining
+BLK-A,DC-CABLE-6MM,6 mm2 PV cable,0,1000,600,20,560,5,415

@@ -1,0 +1,2 @@
+BlockCode,InverterCode,MPPTCode,StringCode,ExpectedModules,ModuleModel,Status
+BLK-A,INV-A-01,MPPT-A-01,STR-A-001,26,MOD-640W,PLANNED

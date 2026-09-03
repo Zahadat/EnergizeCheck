@@ -1,0 +1,28 @@
+[CmdletBinding()]
+param([string]$DatabasePath=(Join-Path $PSScriptRoot 'data\energizecheck.db'))
+$ErrorActionPreference='Stop'
+Set-ExecutionPolicy -Scope Process Bypass -Force
+Import-Module PSSQLite -Force
+Remove-Module EnergizeCheck -Force -ErrorAction SilentlyContinue
+Import-Module (Join-Path $PSScriptRoot 'Modules\EnergizeCheck.psm1') -Force
+Initialize-ECV07Schema -DatabasePath $DatabasePath
+$p=Get-ECProjects -DatabasePath $DatabasePath|Where-Object ProjectCode -eq 'ALPHA-001'|Select-Object -First 1;if($null -eq $p){throw 'ALPHA-001 not found.'};$ProjectId=[int]$p.ProjectId
+$evidenceRoot=Join-Path $PSScriptRoot 'evidence\ALPHA-001';New-Item -ItemType Directory -Path $evidenceRoot -Force|Out-Null
+function New-DemoEvidence([string]$Name,[string]$Text){$path=Join-Path $evidenceRoot $Name;Set-Content -LiteralPath $path -Value $Text -Encoding UTF8;return $path}
+Write-Host '';Write-Host '==================================================' -ForegroundColor Cyan;Write-Host ' DOSSIER / DOCUMENT REMEDIATION' -ForegroundColor Cyan;Write-Host '==================================================' -ForegroundColor Cyan
+
+$trf=New-DemoEvidence 'transformer-commissioning-report.txt' 'Signed transformer commissioning report: IR 850 MOhm; ratio error 0.2 percent; PASS.';Set-ECDocumentEvidence -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-GRID-001' -DocumentCode 'TRF-COM' -FilePath $trf -Revision '01'|Out-Null;Set-ECDocumentApproval -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-GRID-001' -Status APPROVED -Approver 'Grid Commissioning Manager';Write-Host '[FIX] Transformer commissioning report registered and approved.' -ForegroundColor Green
+$relay=New-DemoEvidence 'relay-settings-rev-c.txt' 'Protection relay settings export Revision C - approved baseline';Set-ECDocumentEvidence -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-GRID-002' -DocumentCode 'RELAY-SETTINGS' -FilePath $relay -Revision 'C'|Out-Null;Set-ECDocumentApproval -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-GRID-002' -Status APPROVED -Approver 'Protection Engineer';Write-Host '[FIX] Protection settings updated to controlled Revision C.' -ForegroundColor Green
+Set-ECDocumentApproval -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-BESS-001' -Status APPROVED -Approver 'BESS Technical Manager' -Comment 'Final commissioning register approved.';Write-Host '[FIX] BESS commissioning register approved.' -ForegroundColor Green
+$estop=Join-Path $evidenceRoot 'bess-estop-evidence.txt';Set-ECDocumentEvidence -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-BESS-002' -DocumentCode 'BESS-ESTOP' -FilePath $estop -Revision '01'|Out-Null;Write-Host '[FIX] Emergency shutdown SHA-256 generated.' -ForegroundColor Green
+$sync=Join-Path $evidenceRoot 'grid-sync-report.txt';Set-Content -LiteralPath $sync -Value 'Grid synchronization report verified against MASTER-SLD Rev C' -Encoding UTF8;Set-ECDocumentEvidence -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-GRID-003' -DocumentCode 'GRID-SYNC' -FilePath $sync -Revision '02' -ReferencesDocumentCode 'MASTER-SLD' -ReferencesRevision 'C'|Out-Null;Set-ECDocumentApproval -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-GRID-003' -Status APPROVED -Approver 'Grid Commissioning Manager';Write-Host '[FIX] Grid synchronization report reference updated to MASTER-SLD Rev C.' -ForegroundColor Green
+Set-ECDocumentReview -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-QA-001' -Status ACCEPTED -Reviewer 'Owner Engineer' -Comment 'Historical NCR closure evidence verified.';Write-Host '[FIX] Final NCR register review accepted.' -ForegroundColor Green
+$asb=New-DemoEvidence 'as-built-sld-rev-c.txt' 'As-built SLD package Revision C';Set-ECDocumentEvidence -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-ASB-001' -DocumentCode 'ASBUILT-SLD' -FilePath $asb -Revision 'C'|Out-Null;Set-ECDocumentApproval -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-ASB-001' -Status APPROVED -Approver 'Design Manager';Write-Host '[FIX] As-built SLD file restored and hashed.' -ForegroundColor Green
+$cert=New-DemoEvidence 'final-handover-readiness-certificate.txt' 'EnergizeCheck final readiness certificate: PV, BESS, Grid and dossier gates complete.';Set-ECDocumentEvidence -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-HO-001' -DocumentCode 'HANDOVER-CERT' -FilePath $cert -Revision '01'|Out-Null;Set-ECDocumentApproval -DatabasePath $DatabasePath -ProjectId $ProjectId -RequirementCode 'DOC-HO-001' -Status APPROVED -Approver 'Project Director' -Comment 'Approved for energization and handover.';Write-Host '[FIX] Final handover readiness certificate generated and approved.' -ForegroundColor Green
+
+Invoke-ECValidation -DatabasePath $DatabasePath -ProjectId $ProjectId|Out-Null
+Update-ECDossierResults -DatabasePath $DatabasePath -ProjectId $ProjectId
+$doc=@(Get-ECDossierFindings -DatabasePath $DatabasePath -ProjectId $ProjectId)
+Write-Host '';Write-Host "Remaining DOC7 findings: $($doc.Count)" -ForegroundColor Yellow;if($doc.Count -gt 0){$doc|Format-Table Severity,Rule,Block,Asset,Message -Wrap -AutoSize}else{Write-Host 'DOCUMENTATION AND HANDOVER GATES PASSED.' -ForegroundColor Green}
+Write-Host '';Get-ECDossierOverview -DatabasePath $DatabasePath -ProjectId $ProjectId|Format-Table -AutoSize
+$index=Export-ECDossier -DatabasePath $DatabasePath -ProjectId $ProjectId;Write-Host '';Write-Host "Dossier generated: $index" -ForegroundColor Green
