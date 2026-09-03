@@ -1,4 +1,4 @@
-# EnergizeCheck
+﻿# EnergizeCheck
 
 **PV + BESS + Grid Commissioning Intelligence Platform**
 
@@ -24,12 +24,12 @@ EnergizeCheck was built as an offline prototype to explore that workflow.
 
 ## Technology
 
-- **PowerShell** — application logic, engineering rules, automation and packaging
-- **WPF / XAML** — Windows desktop UI
-- **SQLite** — local relational engineering database
-- **PSSQLite** — PowerShell/SQLite integration
-- **HTML / CSV** — readiness reports and handover dossier output
-- **SHA-256** — evidence-file integrity tracking
+- **PowerShell** â€” application logic, engineering rules, automation and packaging
+- **WPF / XAML** â€” Windows desktop UI
+- **SQLite** â€” local relational engineering database
+- **PSSQLite** â€” PowerShell/SQLite integration
+- **HTML / CSV** â€” readiness reports and handover dossier output
+- **SHA-256** â€” evidence-file integrity tracking
 
 ## Major capabilities
 
@@ -240,13 +240,13 @@ Set-ExecutionPolicy -Scope Process Bypass -Force
 
 The project evolved through these milestones:
 
-- **v0.1** — SQLite validation proof of concept
-- **v0.2** — project management and CSV ingestion
-- **v0.3** — PV engineering calculations
-- **v0.4** — asset explorer, diagnostics and finding workflow
-- **v0.5** — BESS commissioning intelligence
-- **v0.6** — grid connection and protection intelligence
-- **v0.7** — commissioning dossier and document intelligence
+- **v0.1** â€” SQLite validation proof of concept
+- **v0.2** â€” project management and CSV ingestion
+- **v0.3** â€” PV engineering calculations
+- **v0.4** â€” asset explorer, diagnostics and finding workflow
+- **v0.5** â€” BESS commissioning intelligence
+- **v0.6** â€” grid connection and protection intelligence
+- **v0.7** â€” commissioning dossier and document intelligence
 
 The portfolio release intentionally stops here and focuses on demonstrating the end-to-end engineering workflow.
 
@@ -275,7 +275,8 @@ Potential future work:
 
 ## Author
 
-**Ali**  
+**Zahadat**  
 AI Engineer / Renewable Energy Engineering Portfolio Project
 
 Built as an engineering-software portfolio project combining software development, data modelling, automation, electrical commissioning logic, and renewable-energy domain knowledge.
+
